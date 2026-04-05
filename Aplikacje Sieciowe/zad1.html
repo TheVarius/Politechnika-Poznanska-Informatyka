@@ -1,0 +1,339 @@
+<!-- Deklaracja typu dokumentu - mowi przegladarce ze to HTML5 -->
+<!DOCTYPE html>
+
+<!-- Otwiera glowny element HTML; lang="pl" informuje przegladarke ze tresc jest po polsku -->
+<html lang="pl">
+
+<!-- Sekcja head - metadane strony, style, tytul. Nic z tego nie jest wyswietlane na stronie -->
+
+<head>
+
+  <!-- Kodowanie UTF-8 - pozwala wyswietlac polskie znaki (ą, ę, ś, ć...) -->
+  <meta charset="utf-8">
+
+  <!-- Kluczowe dla responsywnosci (RWD):
+       width=device-width - szerokosc strony = szerokosc ekranu urzadzenia
+       initial-scale=1.0  - poczatkowy zoom na 100% (bez przyblizenia) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Tytul strony - wyswietla sie na karcie przegladarki i w wynikach wyszukiwania -->
+  <title>Responsive Website</title>
+
+  <!-- Poczatek bloku CSS (style wewnetrzne) -->
+  <style>
+    /* SELEKTOR UNIWERSALNY - stosuje sie do KAZDEGO elementu na stronie (tzw. CSS reset)
+       box-sizing: border-box - padding i border wliczaja sie w szerokosc/wysokosc elementu
+       margin: 0   - zeruje domyslne marginesy (np. body domyslnie ma ~8px marginesu)
+       padding: 0  - zeruje domyslne paddingi */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* BODY - cialo strony
+       display: flex          - body staje sie kontenerem Flexbox
+       flex-direction: column - elementy (header, main, footer) ukladaja sie w KOLUMNIE (od gory do dolu)
+       min-height: 100vh      - minimalna wysokosc = 100% wysokosci okna przegladarki (vh = viewport height)
+                                 dzieki temu footer moze "przykleic sie" do dolu nawet gdy tresci jest malo
+       font-size: 16px        - domyslny rozmiar czcionki */
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      font-size: 16px;
+    }
+
+    /* NAGLOWEK STRONY
+       display: flex               - Flexbox
+       justify-content: space-between - elementy rozchodza sie na skrajne konce
+                                        (logo+tytul po lewej, nawigacja po prawej)
+       align-items: center         - elementy wycentrowane PIONOWO wzgledem siebie
+       padding: 20px               - 20px wewnetrznego odstępu ze wszystkich stron */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* KONTENER NA LOGO + TYTUL
+       display: flex      - logo i tekst ustawiaja sie OBOK SIEBIE (domyslnie w wierszu)
+       align-items: center - wycentrowanie pionowe (logo i tekst na jednej linii)
+       gap: 10px           - 10px odstępu miedzy logo a tekstem */
+    .brand-logo-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* LOGO - obrazek ma wysokosc 80px, szerokosc dostosuje sie automatycznie (zachowuje proporcje) */
+    .brand-logo {
+      height: 80px;
+    }
+
+    /* TEKST TYTULOWY obok logo
+       font-size: 32px - rozmiar 32px
+       font-family     - czcionka Times New Roman, jesli niedostepna -> Times -> dowolna szeryfowa */
+    .brand-text {
+      font-size: 32px;
+      font-family: "Times New Roman", Times, serif;
+    }
+
+    /* NAWIGACJA DESKTOPOWA - linki wyswietlane w rzedzie
+       display: flex    - linki ukladaja sie obok siebie
+       gap: 25px        - 25px odstępu miedzy poszczegolnymi linkami
+       margin-right: 20px - 20px marginesu od prawej krawedzi */
+    .nav-links {
+      display: flex;
+      font-family: "Times New Roman", Times, serif;
+      font-size: 20px;
+      gap: 25px;
+      margin-right: 20px;
+    }
+
+    /* IKONA MENU MOBILNEGO (hamburger)
+       display: none    - DOMYSLNIE UKRYTA! Pojawia sie tylko na mniejszych ekranach dzieki media queries
+       height: 60px     - wysokosc 60px (gdy jest widoczna)
+       margin-right: 20px - margines od prawej */
+    .mobile-icon {
+      display: none;
+      height: 60px;
+      margin-right: 20px;
+    }
+
+    /* GLOWNA SEKCJA Z KARTAMI
+       display: flex        - kontener Flexbox
+       flex-wrap: wrap      - KLUCZOWE! Pozwala elementom ZAWIJAC SIE do nowego wiersza gdy sie nie mieszcza
+       justify-content: center - karty sa wycentrowane
+       padding: 20px        - wewnetrzny odstep */
+    .main-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* KARTY (styl wspolny dla content-card i content-card-large)
+       position: relative   - pozwala pozycjonowac dzieci z position:absolute WZGLEDEM TEJ KARTY (nie strony)
+                               potrzebne dla badge'a w rogu
+       margin: 20px         - margines 20px dookola
+       padding: 60px 25px 25px 25px - 60px od GORY (miejsce na badge), 25px z pozostalych stron
+       background-color: #cfd6ac   - jasny oliwkowy/zielonkawy kolor tla
+       border: 2px solid black     - czarna ramka 2px
+       text-align: justify  - tekst wyjustowany (wyrownany do obu krawedzi)
+       line-height: 1.5     - odstep miedzy wierszami = 1.5x rozmiaru czcionki */
+    .content-card,
+    .content-card-large {
+      position: relative;
+      margin: 20px;
+      padding: 60px 25px 25px 25px;
+      background-color: #cfd6ac;
+      border: 2px solid black;
+      font-family: Arial, sans-serif;
+      text-align: justify;
+      line-height: 1.5;
+    }
+
+    /* BADGE (etykieta/znacznik w rogu karty)
+       position: absolute   - pozycjonowany absolutnie wzgledem rodzica (karty z position:relative)
+       top: 0; right: 0     - przylepiony do PRAWEGO GORNEGO ROGU karty
+       padding: 8px 25px    - 8px gora/dol, 25px lewo/prawo
+       border-top: none; border-right: none - usuniecie gornej i prawej ramki,
+                                               bo badge dotyka krawedzi karty (nie podwajamy ramki) */
+    .card-badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 8px 25px;
+      font-size: 24px;
+      border: 2px solid black;
+      border-top: none;
+      border-right: none;
+    }
+
+    /* KOLORY TLA DLA BADGE'OW */
+    .bg-cyan {
+      background-color: #43bad1;
+      /* turkusowy */
+    }
+
+    .bg-orange {
+      background-color: #e37725;
+      /* pomaranczowy */
+    }
+
+    .bg-pink {
+      background-color: #dbafb0;
+      /* rozowy */
+    }
+
+    /* STOPKA
+       width: 100%        - pelna szerokosc
+       margin-top: auto   - KLUCZOWE! W Flexboxie kolumnowym (body) "wypycha" stopke na sam DOL strony.
+                             Jesli tresci jest malo, stopka i tak bedzie na dole okna = STICKY FOOTER
+       padding: 30px      - wewnetrzny odstep
+       background-color: #cfd6ac - ten sam zielonkawy kolor co karty
+       border-top: 2px solid black - czarna linia na gorze stopki
+       text-align: center - tekst wycentrowany */
+    .site-footer {
+      width: 100%;
+      margin-top: auto;
+      padding: 30px;
+      background-color: #cfd6ac;
+      border-top: 2px solid black;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    /* =====================================================
+       MEDIA QUERIES - rozne style dla roznych rozmiarow ekranu
+       ===================================================== */
+
+    /* SMARTFON - ekran do 599px szerokosci */
+    @media screen and (max-width: 599px) {
+
+      /* Kazda karta zajmuje 100% szerokosci (jedna pod druga)
+         flex: 1 1 100% = grow:1, shrink:1, basis:100% */
+      .content-card,
+      .content-card-large {
+        flex: 1 1 100%;
+      }
+
+      /* Ukrywa nawigacje desktopowa (linki tekstowe) */
+      .nav-links {
+        display: none;
+      }
+
+      /* Pokazuje ikone menu mobilnego (hamburger) */
+      .mobile-icon {
+        display: block;
+      }
+    }
+
+    /* TABLET - ekran od 600px do 1023px */
+    @media screen and (min-width: 600px) and (max-width: 1023px) {
+
+      /* Duza karta zajmuje CALY wiersz */
+      .content-card-large {
+        flex: 1 1 100%;
+      }
+
+      /* Mniejsze karty maja baze 40%, wiec DWIE mieszcza sie w jednym wierszu */
+      .content-card {
+        flex: 1 1 40%;
+      }
+
+      /* Ukrywa nawigacje desktopowa */
+      .nav-links {
+        display: none;
+      }
+
+      /* Pokazuje ikone menu mobilnego */
+      .mobile-icon {
+        display: block;
+      }
+    }
+
+    /* DESKTOP - ekran od 1024px w gore */
+    @media screen and (min-width: 1024px) {
+
+      /* Obie klasy kart maja baze 25%, wiec mieszcza sie DO 3 W RZEDZIE (z marginesami).
+         Nawigacja desktopowa pozostaje widoczna (domyslnie display:flex),
+         ikona mobilna pozostaje ukryta (domyslnie display:none) */
+      .content-card,
+      .content-card-large {
+        flex: 1 1 25%;
+      }
+    }
+  </style>
+  <!-- Koniec bloku CSS -->
+
+</head>
+<!-- Koniec sekcji head -->
+
+<!-- BODY - cialo dokumentu, wszystko widoczne na stronie jest tutaj -->
+
+<body>
+
+  <!-- HEADER - naglowek strony (Flexbox, space-between = logo po lewej, nawigacja po prawej) -->
+  <header class="page-header">
+
+    <!-- Kontener na logo + tytul (Flexbox, elementy obok siebie) -->
+    <div class="brand-logo-title">
+      <!-- Obrazek logo; alt = tekst alternatywny (dla czytnikow ekranowych / gdy obrazek sie nie zaladuje) -->
+      <img src="logo.png" alt="Website Logo" class="brand-logo">
+      <!-- Tekst tytulowy obok logo -->
+      <div class="brand-text">Responsive website</div>
+    </div>
+
+    <!-- Nawigacja desktopowa - 5 linkow w rzedzie; WIDOCZNA TYLKO NA DESKTOPIE (>=1024px) -->
+    <nav class="nav-links">
+      <span>Lorem</span>
+      <span>Ipsum</span>
+      <span>Dolor</span>
+      <span>Sit</span>
+      <span>Amet</span>
+    </nav>
+
+    <!-- Ikona menu mobilnego - WIDOCZNA TYLKO NA SMARTFONIE/TABLECIE (dzieki media queries) -->
+    <img src="icon.png" alt="Mobile Menu" class="mobile-icon">
+
+  </header>
+
+  <!-- MAIN - glowna tresc strony (Flexbox z zawijaniem = karty ukladaja sie responsywnie) -->
+  <main class="main-grid">
+
+    <!-- KARTA 1 (duza) - na tablecie zajmuje caly wiersz -->
+    <section class="content-card-large">
+      <!-- Badge turkusowy - pozycjonowany absolutnie w prawym gornym rogu karty -->
+      <div class="card-badge bg-cyan">Lorem</div>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam at vehicula sapien, vitae blandit arcu. Proin
+        vulputate sit amet nibh vitae condimentum. Donec pharetra elementum odio, at luctus ex maximus quis. Aliquam
+        facilisis quis sapien eu aliquam. Curabitur tellus felis, facilisis sed leo ac, consequat mattis justo. Mauris
+        consectetur, elit in bibendum hendrerit, ex ante lobortis nunc, et varius risus risus eu lacus.
+      </p>
+    </section>
+
+    <!-- KARTA 2 (mala) - na tablecie dwie takie mieszcza sie w jednym rzedzie -->
+    <section class="content-card">
+      <!-- Badge pomaranczowy -->
+      <div class="card-badge bg-orange">Ipsum</div>
+      <p>
+        Curabitur sollicitudin iaculis eros in luctus. Aenean posuere volutpat sem, sed hendrerit lectus pulvinar a.
+        Integer sed volutpat nisl, eu viverra tortor. Integer purus risus, porttitor non lobortis et, interdum nec orci.
+        Etiam nec augue eu ex congue tincidunt. Donec efficitur gravida metus, quis sollicitudin ex. Suspendisse
+        bibendum libero turpis, vel gravida felis pretium ac. Vivamus volutpat ligula vitae arcu facilisis, vitae tempus
+        risus tincidunt. Donec ac odio vel libero consequat ultricies.
+      </p>
+    </section>
+
+    <!-- KARTA 3 (mala) - zachowuje sie tak samo jak karta 2 -->
+    <section class="content-card">
+      <!-- Badge rozowy -->
+      <div class="card-badge bg-pink">Dolor</div>
+      <p>
+        Ut molestie congue lorem, in accumsan ante viverra at. Nullam neque diam, mollis id nibh at, semper dapibus
+        nulla. Quisque blandit nulla sapien, cursus facilisis quam sagittis vitae. Maecenas tincidunt orci ac leo
+        condimentum tincidunt. Quisque euismod ultrices elit vel blandit. Ut eleifend lacus non leo ullamcorper
+        efficitur. Sed nec magna sed dui rhoncus viverra vitae in dapibus mollis. Donec tempor risus vel ligula
+        tristique, vel egestas justo pulvinar.
+      </p>
+    </section>
+
+  </main>
+  <!-- Koniec glownej tresci -->
+
+  <!-- STOPKA - margin-top:auto sprawia ze zawsze jest na dole strony (sticky footer) -->
+  <footer class="site-footer">
+    Designed by <br>
+    <!-- <strong> = pogrubienie tekstu -->
+    <strong>Adam Yacoubi</strong>
+  </footer>
+
+</body>
+<!-- Koniec ciala dokumentu -->
+
+</html>
+<!-- Koniec dokumentu HTML -->
